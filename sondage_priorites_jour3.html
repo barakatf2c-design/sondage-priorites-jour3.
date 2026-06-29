@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sondage priorités jour 3</title>
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5b6578;
+      --line: #d9dee8;
+      --accent: #1f6feb;
+      --accent-dark: #174ea6;
+      --accent-soft: #dbeafe;
+      --danger: #b42318;
+      --danger-soft: #fee4e2;
+      --shadow: 0 18px 45px rgba(23, 32, 51, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
+
+    main {
+      width: min(1120px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 34px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-start;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.12;
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+    }
+
+    .total-panel {
+      min-width: 190px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      background: #fbfcfe;
+    }
+
+    .total-label {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .total-value {
+      margin: 0;
+      font-size: 44px;
+      line-height: 1;
+      font-weight: 800;
+      color: var(--accent-dark);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(270px, 0.85fr) minmax(420px, 1.35fr);
+      gap: 28px;
+      padding-top: 28px;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+
+    .vote-buttons {
+      display: grid;
+      gap: 12px;
+    }
+
+    .vote-button,
+    .control-button {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .vote-button {
+      min-height: 56px;
+      padding: 14px 16px;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .vote-button:hover,
+    .vote-button:focus-visible {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .vote-button span:last-child {
+      color: var(--accent-dark);
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .control-button {
+      min-height: 48px;
+      padding: 12px 14px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .control-button:hover,
+    .control-button:focus-visible {
+      background: #eef4ff;
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .control-button.danger {
+      color: var(--danger);
+    }
+
+    .control-button.danger:hover,
+    .control-button.danger:focus-visible {
+      background: var(--danger-soft);
+      border-color: var(--danger);
+    }
+
+    .control-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      transform: none;
+    }
+
+    .results {
+      display: grid;
+      gap: 16px;
+    }
+
+    .result-row {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: #ffffff;
+    }
+
+    .result-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+
+    .result-label {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .result-data {
+      color: var(--muted);
+      font-size: 17px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 18px;
+      overflow: hidden;
+      background: #edf0f6;
+      border-radius: 999px;
+    }
+
+    .bar-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .empty-note {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 820px) {
+      body {
+        padding: 18px;
+        align-items: flex-start;
+      }
+
+      main {
+        padding: 24px;
+      }
+
+      header,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        display: grid;
+      }
+
+      .total-panel {
+        min-width: 0;
+      }
+
+      .controls {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Quel axe vous semble le plus prioritaire aujourd’hui&nbsp;?</h1>
+        <p class="subtitle">Cliquez sur une option pour ajouter un vote. Les résultats se mettent à jour automatiquement.</p>
+      </div>
+      <section class="total-panel" aria-live="polite">
+        <p class="total-label">Total votes</p>
+        <p class="total-value" id="totalVotes">0</p>
+      </section>
+    </header>
+
+    <section class="layout">
+      <div>
+        <p class="section-title">Voter</p>
+        <div class="vote-buttons" id="voteButtons"></div>
+
+        <div class="controls">
+          <button class="control-button" id="undoButton" type="button">Retirer le dernier vote</button>
+          <button class="control-button danger" id="resetButton" type="button">Réinitialiser le sondage</button>
+        </div>
+        <p class="empty-note">Les données restent dans cette page tant qu'elle est ouverte. Réinitialisez avant une nouvelle session.</p>
+      </div>
+
+      <div>
+        <p class="section-title">Résultats en direct</p>
+        <div class="results" id="results" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const options = [
+      "Marque employeur",
+      "Offre d'emploi",
+      "Processus de recrutement",
+      "Intégration",
+      "Fidélisation"
+    ];
+
+    const votes = Array(options.length).fill(0);
+    const voteHistory = [];
+
+    const voteButtons = document.getElementById("voteButtons");
+    const results = document.getElementById("results");
+    const totalVotes = document.getElementById("totalVotes");
+    const undoButton = document.getElementById("undoButton");
+    const resetButton = document.getElementById("resetButton");
+
+    function getTotalVotes() {
+      return votes.reduce((sum, count) => sum + count, 0);
+    }
+
+    function formatPercent(value) {
+      return value.toLocaleString("fr-FR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 1
+      });
+    }
+
+    function renderVoteButtons() {
+      voteButtons.innerHTML = "";
+
+      options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "vote-button";
+        button.type = "button";
+        button.innerHTML = `<span>${option}</span><span aria-hidden="true">+</span>`;
+        button.setAttribute("aria-label", `Ajouter un vote pour ${option}`);
+        button.addEventListener("click", () => addVote(index));
+        voteButtons.appendChild(button);
+      });
+    }
+
+    function renderResults() {
+      const total = getTotalVotes();
+      totalVotes.textContent = total;
+      results.innerHTML = "";
+
+      options.forEach((option, index) => {
+        const count = votes[index];
+        const percent = total === 0 ? 0 : (count / total) * 100;
+
+        const row = document.createElement("div");
+        row.className = "result-row";
+        row.innerHTML = `
+          <div class="result-header">
+            <div class="result-label">${option}</div>
+            <div class="result-data">${count} vote${count > 1 ? "s" : ""} - ${formatPercent(percent)} %</div>
+          </div>
+          <div class="bar-track" aria-label="${formatPercent(percent)} pour cent">
+            <div class="bar-fill" style="width: ${percent}%"></div>
+          </div>
+        `;
+
+        results.appendChild(row);
+      });
+
+      undoButton.disabled = voteHistory.length === 0;
+      resetButton.disabled = total === 0;
+    }
+
+    function addVote(index) {
+      votes[index] += 1;
+      voteHistory.push(index);
+      renderResults();
+    }
+
+    function undoLastVote() {
+      const lastVote = voteHistory.pop();
+
+      if (lastVote === undefined) {
+        return;
+      }
+
+      votes[lastVote] -= 1;
+      renderResults();
+    }
+
+    function resetPoll() {
+      votes.fill(0);
+      voteHistory.length = 0;
+      renderResults();
+    }
+
+    undoButton.addEventListener("click", undoLastVote);
+    resetButton.addEventListener("click", resetPoll);
+
+    renderVoteButtons();
+    renderResults();
+  </script>
+</body>
+</html>
